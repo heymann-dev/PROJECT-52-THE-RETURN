@@ -9,7 +9,7 @@ DTSTART;TZID=America/Los_Angeles:20260801T170000
 DTEND;TZID=America/Los_Angeles:20260801T173000
 RRULE:FREQ=WEEKLY;BYDAY=SA;UNTIL=20270101T075959Z
 SUMMARY:Project 52 Weekly Reflection
-URL:https://heymann-dev.github.io/Project-52-V40/?v=42#reviews
-DESCRIPTION:Open Project 52 v42. Answer the three Weekly Rebuild Review questions, inspect the evidence-generated field plan, and choose next week's adjustment.
+URL:https://heymann-dev.github.io/PROJECT-52-THE-RETURN/?v=43#reviews
+DESCRIPTION:Open Project 52: The Return v43. Answer the three Weekly Rebuild Review questions, inspect the evidence-generated field plan, and choose next week's adjustment.
 END:VEVENT
 END:VCALENDAR

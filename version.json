@@ -1,8 +1,8 @@
 {
   "app": "Project 52",
   "channel": "private",
-  "version": 42,
+  "version": 43,
   "released": "2026-08-02",
-  "build": "total-rebuild-1",
+  "build": "the-return-final-stable-2",
   "minimumBackupVersion": 1
 }

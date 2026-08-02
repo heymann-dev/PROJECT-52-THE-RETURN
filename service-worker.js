@@ -1,9 +1,10 @@
-const CACHE_NAME = 'project-52-v42-total-rebuild-1';
+const CACHE_NAME = 'project-52-v43-the-return-final-stable-2';
 const APP_SHELL = [
   './', './index.html', './manifest.json', './version.json',
   './northstar-v38.css', './northstar-v38.js',
   './northstar-v39.css', './northstar-v39.js',
   './northstar-v40.css', './northstar-v40.js', './northstar-v40-command.css',
+  './northstar-v43.css', './northstar-v43.js',
   './icon-192.png', './icon-512.png', './apple-touch-icon.png',
   './northstar-hero.svg', './mountain-trail.svg', './forge-mark.svg',
   './weekly-reflection-saturday-5pm.ics', './northstar-daily-checkin-5pm.ics'

@@ -1,4 +1,4 @@
-/* Project 52 v39
+/* Project 52 v38
  * Private, local-first command center:
  * - permanent lifetime history/XP/levels plus a reversible Momentum stake
  * - adaptive, calendar-aware daily command
@@ -10,7 +10,7 @@
 (() => {
   'use strict';
 
-  const PRIVATE_VERSION = 39;
+  const PRIVATE_VERSION = 38;
   const V37_PHASE_START = '2026-07-29';
   const V37_LAPSE_DATE = '2026-07-28';
   const PRE_IMPORT_STATE_KEY = 'sixMonthForge.preImportRollback.v2';
@@ -384,7 +384,6 @@
     target.levelSystem.penaltiesDisabledAt = target.levelSystem.penaltiesDisabledAt || new Date().toISOString();
     ensureMomentum(target);
     ensureWeeklyMissions(target);
-    ensureAugustFoundation(target);
     target.admin = Array.isArray(target.admin) ? target.admin : [];
     [
       {
@@ -666,7 +665,6 @@
     const capacity = capacityFor(day, mode);
     const sleep = eventBy(events, /sleep|post[- ]shift recovery/i);
     const rehab = eventBy(events, /rehab|physical therapy|\bPT\b/i);
-    const augustAnkle = scheduledAugustHabits(date).ankle;
     const review = eventBy(events, /midweek review|daily check[- ]in|review/i);
     const work = eventBy(events, /night shift|noc|\bwork\b/i);
     const openAdmin = nextOpenAdmin();
@@ -678,9 +676,7 @@
       critical = sleep
         ? `Protect ${eventTime(sleep)} for ${sleep.title || sleep.summary}.`
         : 'Protect the main post-shift sleep block before adding productivity.';
-      body = augustAnkle
-        ? 'Complete the scheduled 20-minute approved right-ankle rehabilitation, or its approved Recovery version when capacity/symptoms require it. Do not add a competing Body Mission.'
-        : rehab
+      body = rehab
         ? `Complete or appropriately modify ${rehab.title || rehab.summary} at ${eventTime(rehab)} within current restrictions.`
         : 'Use the clinician-approved recovery minimum; legitimate rest counts when it is the correct intervention.';
       const reviewEvents = events.filter(event => /review|check[- ]in/i.test(event.title || event.summary || ''));
@@ -691,9 +687,7 @@
       critical = work
         ? `Prepare for and complete ${work.title || work.summary} at ${eventTime(work)} safely and professionally.`
         : 'Prepare for and complete the RN night shift safely and professionally.';
-      body = augustAnkle
-        ? 'Complete the scheduled 20-minute approved right-ankle rehabilitation, or its approved Recovery version, without borrowing from pre-shift sleep. This is the only Body Mission.'
-        : rehab
+      body = rehab
         ? `Complete or modify ${rehab.title || rehab.summary} before the shift without borrowing from sleep.`
         : 'Complete only the minimum effective recovery work; do not borrow from pre-shift sleep.';
       life = openAdmin
@@ -706,9 +700,7 @@
         : openAdmin
           ? `Complete the highest-leverage open task: ${openAdmin.title}.`
           : 'Complete one meaningful avoided or high-leverage task.';
-      body = augustAnkle
-        ? 'Complete the scheduled 20-minute approved right-ankle rehabilitation at 3:00 PM, or the approved Recovery version if readiness is RED. This replaces any other Body Mission.'
-        : rehab
+      body = rehab
         ? `Complete ${rehab.title || rehab.summary} at ${eventTime(rehab)} within current restrictions.`
         : 'Complete planned rehabilitation or training within current surgeon and PT restrictions.';
       life = review
@@ -1323,7 +1315,7 @@
         <div class="v37PanelTop">
           <div>
             <div class="label">Private update channel</div>
-            <div class="smallNum" id="v37UpdateStatus">Installed v39</div>
+            <div class="smallNum" id="v37UpdateStatus">Installed v38</div>
             <div class="mini">Checks the deployed private build manifest and asks the service worker for a fresh version.</div>
           </div>
           <button type="button" class="action" id="v37CheckUpdate">Check for update</button>
@@ -1338,368 +1330,6 @@
     `);
   }
 
-  const AUGUST_DATES = {
-    whitening: ['2026-08-03','2026-08-05','2026-08-07','2026-08-10','2026-08-12','2026-08-14','2026-08-17','2026-08-19','2026-08-21','2026-08-24','2026-08-26','2026-08-28'],
-    jaw: ['2026-08-04','2026-08-06','2026-08-08','2026-08-11','2026-08-13','2026-08-15','2026-08-18','2026-08-20','2026-08-22','2026-08-25','2026-08-27','2026-08-29'],
-    ankle: ['2026-08-03','2026-08-05','2026-08-07','2026-08-10','2026-08-12','2026-08-14','2026-08-17','2026-08-19','2026-08-21','2026-08-24','2026-08-26','2026-08-28','2026-08-31']
-  };
-  const BASELINE_VIEWS = [
-    'Physique front','Physique back','Physique left side','Physique right side',
-    'Face front neutral','Face front smile','Face left profile','Face right profile',
-    'Face left 45°','Face right 45°','Teeth smile','Bite front','Bite left','Bite right'
-  ];
-
-  function ensureAugustFoundation(target = state) {
-    target.augustFoundation = {
-      title: 'LOOK MAXED — FOUNDATION PHASE',
-      baseline: { label: 'July 2026 Baseline', due: '2026-07-31', views: {}, weight: '', waist: '', completeAt: null },
-      cholesterol: {
-        start: '2026-08-01', end: '2026-08-14',
-        reviews: ['2026-08-05T16:15:00-07:00','2026-08-12T16:15:00-07:00'],
-        retest: '2026-08-18T07:30:00-07:00', decision: '2026-08-20T09:45:00-07:00',
-        prior: { ldlC: '', nonHdlC: '', triglycerides: '', hdlC: '' },
-        current: { ldlC: '', nonHdlC: '', triglycerides: '', hdlC: '' },
-        retestCompleted: false, valuesRemainElevated: 'Review needed',
-        clinicianContacted: false, documentedDecision: '', decisionCompletedAt: null
-      },
-      calendarSource: 'Google Calendar verified 2026-07-29',
-      ...target.augustFoundation
-    };
-    target.augustFoundation.baseline = {
-      label: 'July 2026 Baseline', due: '2026-07-31', views: {}, weight: '', waist: '', completeAt: null,
-      ...(target.augustFoundation.baseline || {})
-    };
-    target.augustFoundation.cholesterol = {
-      start: '2026-08-01', end: '2026-08-14',
-      reviews: ['2026-08-05T16:15:00-07:00','2026-08-12T16:15:00-07:00'],
-      retest: '2026-08-18T07:30:00-07:00', decision: '2026-08-20T09:45:00-07:00',
-      prior: {}, current: {}, retestCompleted: false, valuesRemainElevated: 'Review needed',
-      clinicianContacted: false, documentedDecision: '', decisionCompletedAt: null,
-      ...(target.augustFoundation.cholesterol || {})
-    };
-    target.healthBridge = {
-      mode: 'Apple Health export import',
-      lastImportAt: null,
-      sourceName: '',
-      daily: {},
-      recordCount: 0,
-      privacy: 'On-device import; never used for automatic medical or medication decisions.',
-      ...target.healthBridge
-    };
-    target.healthBridge.daily = target.healthBridge.daily || {};
-  }
-
-  function ensureAugustDay(day) {
-    day.august = {
-      heartHealthNutrition: false,
-      whitening: false,
-      jawTraining: false,
-      ankleRehab: false,
-      ankleRecoveryVersion: false,
-      ankleMinutes: '',
-      ...day.august
-    };
-    return day.august;
-  }
-
-  function dateInRange(date, start, end) {
-    return date >= start && date <= end;
-  }
-
-  function countAugustAction(key, dates) {
-    return dates.filter(date => !!state.days?.[date]?.august?.[key]).length;
-  }
-
-  function ankleWeekProgress(date = activeDate()) {
-    const cursor = new Date(`${date}T12:00:00Z`);
-    const day = cursor.getUTCDay();
-    cursor.setUTCDate(cursor.getUTCDate() - ((day + 6) % 7));
-    const start = cursor.toISOString().slice(0, 10);
-    const end = addDays(start, 6);
-    const scheduled = AUGUST_DATES.ankle.filter(value => value >= start && value <= end);
-    return {
-      done: scheduled.filter(value => !!state.days?.[value]?.august?.ankleRehab || !!state.days?.[value]?.august?.ankleRecoveryVersion).length,
-      target: Math.min(3, scheduled.length || 3)
-    };
-  }
-
-  function ensureAugustPanels() {
-    ensureAugustFoundation(state);
-    if (!$('v39AugustMission')) {
-      $('v37Coach')?.insertAdjacentHTML('afterend', `
-        <section class="card v39August" id="v39AugustMission" aria-labelledby="v39AugustTitle">
-          <div class="v37PanelTop">
-            <div><div class="eyebrow">August primary mission</div><h2 id="v39AugustTitle">LOOK MAXED — FOUNDATION PHASE</h2>
-            <div class="mini">One consolidated foundation card. Appearance evidence is private and separate from the Project 52 Score.</div></div>
-            <span class="pill gold">Aug 1–31</span>
-          </div>
-          <div class="v39ProgressGrid" id="v39AugustProgress"></div>
-          <details>
-            <summary><span class="summaryStack"><b>July 2026 Baseline</b><span>Standardized original physique, face/jaw, and teeth/bite evidence</span></span><span class="pill blue">Due Jul 31</span></summary>
-            <div class="detailsBody">
-              <div class="notice">Use consistent lighting, distance, clothing, posture, and camera height. Do not force bite alignment. Original photos remain in the existing device-local photo archive and full backups.</div>
-              <div class="v39BaselineGrid" id="v39BaselineGrid"></div>
-              <div class="formGrid">
-                <div class="field"><label class="formLabel">Optional weight</label><input id="v39BaselineWeight" type="number" step=".1"/></div>
-                <div class="field"><label class="formLabel">Optional waist</label><input id="v39BaselineWaist" type="number" step=".1"/></div>
-              </div>
-              <div class="spacer"></div><button type="button" class="action green" id="v39SaveBaseline">Save baseline status</button>
-            </div>
-          </details>
-          <details>
-            <summary><span class="summaryStack"><b>Cholesterol correction sprint</b><span>Aug 1–14 · sustainable heart-health nutrition with safe Type 1 diabetes management</span></span></summary>
-            <div class="detailsBody">
-              <div class="v39Schedule">Aug 5 4:15 PM review · Aug 12 4:15 PM review · Aug 18 7:30 AM fasting lipids · Aug 20 9:45 AM decision checkpoint</div>
-              <div class="notice">Medication decisions stay clinician-guided. The app never recommends a self-directed statin start, stop, dose, or insulin change.</div>
-              <div class="label">Prior panel</div><div class="v39LipidGrid" id="v39PriorLipids"></div>
-              <div class="label">Aug 18 panel</div><div class="v39LipidGrid" id="v39CurrentLipids"></div>
-              <div class="formGrid">
-                <label class="tap"><input id="v39RetestComplete" type="checkbox"><span><b>Fasting lipid retest completed</b><small>Use your clinician’s fasting and Type 1 diabetes plan.</small></span></label>
-                <div class="field"><label class="formLabel">Substantially elevated?</label><select id="v39Elevated"><option>Review needed</option><option>Yes</option><option>No</option></select></div>
-              </div>
-              <label class="tap"><input id="v39ClinicianContacted" type="checkbox"><span><b>Treating clinician contacted</b><small>Required before closing an elevated-results decision.</small></span></label>
-              <label class="formLabel">Documented shared decision / next action</label><textarea id="v39TreatmentDecision" placeholder="Clinician contact, shared statin/lifestyle decision, and next follow-up."></textarea>
-              <div class="spacer"></div><button type="button" class="action green" id="v39SaveLipids">Save results checkpoint</button>
-            </div>
-          </details>
-        </section>
-      `);
-    }
-    if (!$('v39ModalityWeb')) {
-      $('v39AugustMission')?.insertAdjacentHTML('afterend', `
-        <section class="card v39Web" id="v39ModalityWeb">
-          <div class="v37PanelTop"><div><div class="eyebrow">Balanced progress</div><h2>Project 52 Modality Web</h2>
-          <div class="mini">A balance view, not another score or appearance grade.</div></div>
-          <select id="v39WebRange" aria-label="Radar chart period"><option value="today">Today</option><option value="week">Last 7 completed days</option><option value="july">July</option><option value="august">August</option></select></div>
-          <div class="v39WebLayout"><svg id="v39Radar" viewBox="0 0 320 300" role="img" aria-label="Six-modality Project 52 radar chart"></svg><div id="v39RadarLegend"></div></div>
-        </section>
-      `);
-    }
-    if (!$('v39AugustDaily')) {
-      const anchor = $('missionTaps')?.closest('.card');
-      anchor?.insertAdjacentHTML('afterend', `
-        <div class="sectionHead" id="v39AugustDaily"><h2>August Supporting Habits</h2><div class="mini">calendar-aware · no duplicate missions</div></div>
-        <div class="card"><div id="v39AugustDailyChecks"></div></div>
-      `);
-    }
-    if (!$('v39AppleHealth')) {
-      $('v37CalendarBridge')?.parentElement?.insertAdjacentHTML('beforeend', `
-        <div class="sectionHead" id="v39AppleHealth"><h2>Apple Health Bridge</h2><div class="mini">private export import</div></div>
-        <div class="card">
-          <div class="v37PanelTop"><div><div class="smallNum" id="v39HealthStatus">No Apple Health data imported</div>
-          <div class="mini">The offline PWA imports Apple Health export.xml or a CSV on device. Direct background HealthKit sync belongs in the native iPhone phase and requires explicit Apple permissions.</div></div>
-          <label class="action blue" for="v39HealthFile">Import export</label><input class="hidden" id="v39HealthFile" type="file" accept=".xml,.csv,text/xml,text/csv"/>
-          </div><div id="v39HealthSummary" class="v39HealthGrid"></div>
-        </div>
-      `);
-    }
-    const select = $('photoCategory');
-    BASELINE_VIEWS.forEach(label => {
-      if (select && ![...select.options].some(option => option.value === label)) select.add(new Option(label, label));
-    });
-  }
-
-  function progressTile(label, value, detail = '') {
-    return `<div class="v39Progress"><span>${escapeHtml(label)}</span><b>${escapeHtml(value)}</b>${detail ? `<small>${escapeHtml(detail)}</small>` : ''}</div>`;
-  }
-
-  function renderAugustFoundation() {
-    if (!$('v39AugustMission')) return;
-    ensureAugustFoundation(state);
-    const foundation = state.augustFoundation;
-    const baselineDone = BASELINE_VIEWS.every(view => !!foundation.baseline.views?.[view]);
-    const nutrition = countAugustAction('heartHealthNutrition', Array.from({length:14}, (_, i) => `2026-08-${pad(i + 1)}`));
-    const whitening = countAugustAction('whitening', AUGUST_DATES.whitening);
-    const jaw = countAugustAction('jawTraining', AUGUST_DATES.jaw);
-    const ankle = ankleWeekProgress();
-    $('v39AugustProgress').innerHTML = [
-      progressTile('July baseline', baselineDone ? 'Complete' : 'Pending', `${Object.values(foundation.baseline.views || {}).filter(Boolean).length}/${BASELINE_VIEWS.length} views`),
-      progressTile('Cholesterol sprint', `${nutrition} / 14 days`),
-      progressTile('Whitening', `${whitening} / 12`),
-      progressTile('Jaw training', `${jaw} / 12`),
-      progressTile('Ankle rehabilitation', `${ankle.done} / ${ankle.target}`, 'current calendar week'),
-      progressTile('Fasting lipids', foundation.cholesterol.retestCompleted ? 'Completed' : 'Scheduled', 'Aug 18 · 7:30 AM'),
-      progressTile('Treatment decision', foundation.cholesterol.decisionCompletedAt ? 'Completed' : 'Pending', 'Aug 20 · 9:45 AM')
-    ].join('');
-    $('v39BaselineGrid').innerHTML = BASELINE_VIEWS.map(view => `<label class="tap"><input type="checkbox" data-v39-baseline="${escapeAttr(view)}" ${foundation.baseline.views?.[view] ? 'checked' : ''}><span><b>${escapeHtml(view)}</b><small>Original stored under “July 2026 Baseline.”</small></span></label>`).join('');
-    $('v39BaselineWeight').value = foundation.baseline.weight || '';
-    $('v39BaselineWaist').value = foundation.baseline.waist || '';
-    const lipidFields = (prefix, object) => ['ldlC','nonHdlC','triglycerides','hdlC'].map(key => {
-      const labels = { ldlC: 'LDL-C', nonHdlC: 'Non-HDL-C', triglycerides: 'Triglycerides', hdlC: 'HDL-C' };
-      return `<div class="field"><label class="formLabel">${labels[key]}</label><input type="number" step=".1" data-v39-lipid="${prefix}.${key}" value="${escapeAttr(object?.[key] || '')}"></div>`;
-    }).join('');
-    $('v39PriorLipids').innerHTML = lipidFields('prior', foundation.cholesterol.prior);
-    $('v39CurrentLipids').innerHTML = lipidFields('current', foundation.cholesterol.current);
-    $('v39RetestComplete').checked = !!foundation.cholesterol.retestCompleted;
-    $('v39Elevated').value = foundation.cholesterol.valuesRemainElevated || 'Review needed';
-    $('v39ClinicianContacted').checked = !!foundation.cholesterol.clinicianContacted;
-    $('v39TreatmentDecision').value = foundation.cholesterol.documentedDecision || '';
-  }
-
-  function scheduledAugustHabits(date) {
-    const events = calendarEventsFor(date).map(event => `${event.title || event.summary || ''} ${event.description || ''}`).join(' ');
-    return {
-      nutrition: dateInRange(date, '2026-08-01', '2026-08-14'),
-      whitening: /teeth whitening/i.test(events) || AUGUST_DATES.whitening.includes(date),
-      jaw: /jaw training/i.test(events) || AUGUST_DATES.jaw.includes(date),
-      ankle: /20-min ankle|ankle minimum|rehab workout/i.test(events) || AUGUST_DATES.ankle.includes(date)
-    };
-  }
-
-  function renderAugustDaily() {
-    if (!$('v39AugustDailyChecks')) return;
-    const date = logDate();
-    const schedule = scheduledAugustHabits(date);
-    const day = getDay(date);
-    const values = day?.august || {};
-    const rows = [];
-    if (schedule.nutrition) rows.push(`<label class="tap"><input data-v39-day="heartHealthNutrition" type="checkbox" ${values.heartHealthNutrition ? 'checked' : ''}><span><b>Heart-health nutrition completed</b><small>Legitimate effort: less saturated-fat-heavy food, more lean/plant protein, unsaturated fats and fiber, with safe Type 1 diabetes care. No crash dieting.</small></span></label>`);
-    if (schedule.whitening) rows.push(`<label class="tap"><input data-v39-day="whitening" type="checkbox" ${values.whitening ? 'checked' : ''}><span><b>Teeth whitening session</b><small>Follow product/dentist wear time. Never double. Pause for significant sensitivity or gum irritation.</small></span></label>`);
-    if (schedule.jaw) rows.push(`<label class="tap"><input data-v39-day="jawTraining" type="checkbox" ${values.jawTraining ? 'checked' : ''}><span><b>Gentle 15-minute jaw routine</b><small>Posture, symmetry and control. Stop for pain, locking, or worsening clicking; never force alignment.</small></span></label>`);
-    if (schedule.ankle) rows.push(`<label class="tap"><input data-v39-day="ankleRehab" type="checkbox" ${values.ankleRehab ? 'checked' : ''}><span><b>20-minute approved right-ankle rehabilitation</b><small>This is today’s Body Mission. Check pain, swelling, gait/limp, instability, sleep/energy, glucose readiness and restrictions first.</small></span></label>
-      <label class="tap"><input data-v39-day="ankleRecoveryVersion" type="checkbox" ${values.ankleRecoveryVersion ? 'checked' : ''}><span><b>Approved Recovery version</b><small>Counts when capacity is RED or symptoms exceed approved limits. Never double a missed session.</small></span></label>`);
-    $('v39AugustDailyChecks').innerHTML = rows.length ? rows.join('') : '<div class="notice">No August Foundation habit is scheduled for this date. The normal Project 52 command remains active.</div>';
-  }
-
-  function radarValues(range) {
-    const dates = range === 'today' ? [activeDate()] : range === 'week'
-      ? historyDates().filter(date => completedDay(state.days[date])).slice(0, 7)
-      : historyDates().filter(date => date.startsWith(range === 'july' ? '2026-07' : '2026-08'));
-    const rows = dates.map(date => state.days?.[date]).filter(Boolean);
-    const average = fn => rows.length ? Math.round(rows.reduce((sum, row) => sum + fn(row), 0) / rows.length) : 0;
-    return [
-      ['Body / Rehab', average(day => Math.round(categoryScores(day).body * 100))],
-      ['Career / RN', average(day => Math.round(categoryScores(day).career * 100))],
-      ['Money / Discipline', average(day => day.fullChecklist?.moneyDiscipline || day.fullChecklist?.financial ? 100 : Math.round(categoryScores(day).admin * 65))],
-      ['Attention Control', average(day => Math.round(categoryScores(day).attention * 100))],
-      ['Life Admin', average(day => Math.round(categoryScores(day).admin * 100))],
-      ['Connection / Outdoors', average(day => Math.round(categoryScores(day).connection * 100))]
-    ];
-  }
-
-  function radarPoint(index, value, radius = 112) {
-    const angle = (-90 + index * 60) * Math.PI / 180;
-    const r = radius * value / 100;
-    return [160 + Math.cos(angle) * r, 145 + Math.sin(angle) * r];
-  }
-
-  function renderRadar() {
-    if (!$('v39Radar')) return;
-    const values = radarValues($('v39WebRange')?.value || 'today');
-    const rings = [25, 50, 75, 100].map(level => `<polygon points="${values.map((_, i) => radarPoint(i, level).join(',')).join(' ')}" class="v39RadarRing"/>`).join('');
-    const axes = values.map((_, i) => {
-      const [x, y] = radarPoint(i, 100);
-      return `<line x1="160" y1="145" x2="${x}" y2="${y}" class="v39RadarAxis"/>`;
-    }).join('');
-    const shape = `<polygon points="${values.map(([, value], i) => radarPoint(i, value).join(',')).join(' ')}" class="v39RadarShape"/>`;
-    const labels = values.map(([label], i) => {
-      const [x, y] = radarPoint(i, 124);
-      return `<text x="${x}" y="${y}" text-anchor="middle" class="v39RadarLabel">${escapeHtml(label.replace(' / ', '/'))}</text>`;
-    }).join('');
-    $('v39Radar').innerHTML = `${rings}${axes}${shape}${labels}`;
-    $('v39RadarLegend').innerHTML = values.map(([label, value]) => `<div class="v39RadarMetric"><span>${escapeHtml(label)}</span><b>${value}</b></div>`).join('');
-  }
-
-  function parseAppleHealthXml(text) {
-    const doc = new DOMParser().parseFromString(text, 'application/xml');
-    if (doc.querySelector('parsererror')) throw new Error('Apple Health XML could not be read');
-    const daily = {};
-    [...doc.querySelectorAll('Record')].forEach(record => {
-      const type = record.getAttribute('type') || '';
-      const date = (record.getAttribute('startDate') || '').slice(0, 10);
-      const value = Number(record.getAttribute('value'));
-      if (!date || !Number.isFinite(value)) return;
-      const row = daily[date] ||= { steps: 0, activeEnergy: 0, restingHeartRate: [], weight: [] };
-      if (/StepCount$/.test(type)) row.steps += value;
-      if (/ActiveEnergyBurned$/.test(type)) row.activeEnergy += value;
-      if (/RestingHeartRate$/.test(type)) row.restingHeartRate.push(value);
-      if (/BodyMass$/.test(type)) row.weight.push(value);
-    });
-    Object.values(daily).forEach(row => {
-      row.restingHeartRate = row.restingHeartRate.length ? Math.round(avg(row.restingHeartRate)) : null;
-      row.weight = row.weight.length ? Number(avg(row.weight).toFixed(1)) : null;
-      row.steps = Math.round(row.steps);
-      row.activeEnergy = Math.round(row.activeEnergy);
-    });
-    return daily;
-  }
-
-  function parseAppleHealthCsv(text) {
-    const lines = text.trim().split(/\r?\n/);
-    if (lines.length < 2) throw new Error('Apple Health CSV has no records');
-    const headers = lines[0].split(',').map(value => value.trim().replace(/^"|"$/g, '').toLowerCase());
-    const daily = {};
-    lines.slice(1).forEach(line => {
-      const cells = line.split(',').map(value => value.trim().replace(/^"|"$/g, ''));
-      const date = (cells[headers.findIndex(value => /date|start/.test(value))] || '').slice(0, 10);
-      if (!date) return;
-      const row = daily[date] ||= {};
-      headers.forEach((header, index) => {
-        const value = Number(cells[index]);
-        if (!Number.isFinite(value)) return;
-        if (/steps?/.test(header)) row.steps = value;
-        if (/active.*energy/.test(header)) row.activeEnergy = value;
-        if (/resting.*heart/.test(header)) row.restingHeartRate = value;
-        if (/weight|body.*mass/.test(header)) row.weight = value;
-      });
-    });
-    return daily;
-  }
-
-  async function importAppleHealth(file) {
-    try {
-      const text = await file.text();
-      const incoming = file.name.toLowerCase().endsWith('.xml') ? parseAppleHealthXml(text) : parseAppleHealthCsv(text);
-      ensureAugustFoundation(state);
-      state.healthBridge.daily = { ...state.healthBridge.daily, ...incoming };
-      state.healthBridge.lastImportAt = new Date().toISOString();
-      state.healthBridge.sourceName = file.name;
-      state.healthBridge.recordCount = Object.keys(incoming).length;
-      save();
-      renderHealthBridge();
-      toast(`${Object.keys(incoming).length} Apple Health day summaries imported on device`);
-    } catch (error) {
-      toast(error.message || 'Apple Health import failed');
-    }
-  }
-
-  function renderHealthBridge() {
-    if (!$('v39HealthStatus')) return;
-    ensureAugustFoundation(state);
-    const bridge = state.healthBridge;
-    $('v39HealthStatus').textContent = bridge.lastImportAt
-      ? `${Object.keys(bridge.daily).length} daily summaries · ${new Date(bridge.lastImportAt).toLocaleString()}`
-      : 'No Apple Health data imported';
-    const latestDate = Object.keys(bridge.daily).sort().pop();
-    const latest = bridge.daily[latestDate] || {};
-    $('v39HealthSummary').innerHTML = latestDate ? [
-      progressTile('Latest day', latestDate),
-      progressTile('Steps', latest.steps == null ? '—' : String(Math.round(latest.steps))),
-      progressTile('Active energy', latest.activeEnergy == null ? '—' : `${Math.round(latest.activeEnergy)} kcal`),
-      progressTile('Resting HR', latest.restingHeartRate == null ? '—' : `${Math.round(latest.restingHeartRate)} bpm`),
-      progressTile('Weight', latest.weight == null ? '—' : String(latest.weight))
-    ].join('') : '';
-  }
-
-  const savePhotoV39 = savePhoto;
-  savePhoto = async function () {
-    const date = $('photoDate')?.value || activeDate();
-    const category = $('photoCategory')?.value || '';
-    const isBaselineView = date >= '2026-07-01' && date <= '2026-07-31' && BASELINE_VIEWS.includes(category);
-    if (isBaselineView && $('photoCaption') && !$('photoCaption').value.trim()) {
-      $('photoCaption').value = `July 2026 Baseline · ${category}`;
-    }
-    await savePhotoV39();
-    if (!isBaselineView) return;
-    ensureAugustFoundation(state);
-    state.augustFoundation.baseline.views[category] = true;
-    state.augustFoundation.baseline.completeAt = BASELINE_VIEWS.every(view => state.augustFoundation.baseline.views[view])
-      ? (state.augustFoundation.baseline.completeAt || new Date().toISOString())
-      : null;
-    save();
-    renderAugustFoundation();
-  };
-
   function ensurePanels() {
     ensureCoachPanel();
     ensureWeeklyMissionPanel();
@@ -1709,7 +1339,6 @@
     ensureEvidencePanel();
     ensureCashPanel();
     ensureDataPanels();
-    ensureAugustPanels();
     hideDuplicateSurfaces();
   }
 
@@ -1894,12 +1523,8 @@
     renderCashReserve();
     renderRewardReset();
     renderDataStatus();
-    renderAugustFoundation();
-    renderAugustDaily();
-    renderRadar();
-    renderHealthBridge();
     if ($('avoidedToday')) $('avoidedToday').value = getDay(logDate())?.avoided || '';
-    if ($('appVersion')) $('appVersion').textContent = 'v39 · August foundation';
+    if ($('appVersion')) $('appVersion').textContent = 'v38 · private adaptive command';
     const penaltyMetric = $('summitPenaltyXP')?.closest('.metric');
     if (penaltyMetric) penaltyMetric.classList.add('hidden');
     if ($('summitPeakLevel')) $('summitPeakLevel').textContent = state.levelSystem.highestEarned;
@@ -2479,62 +2104,9 @@
       if (event.target.closest('#v37CheckUpdate')) return checkForUpdate();
       if (event.target.closest('#v37ShareBackup')) return shareBackup();
       if (event.target.closest('#v37RestoreRollback')) return restorePreImportRollback();
-      if (event.target.closest('#v39SaveBaseline')) {
-        ensureAugustFoundation(state);
-        $$('[data-v39-baseline]').forEach(input => {
-          state.augustFoundation.baseline.views[input.dataset.v39Baseline] = input.checked;
-        });
-        state.augustFoundation.baseline.weight = $('v39BaselineWeight').value;
-        state.augustFoundation.baseline.waist = $('v39BaselineWaist').value;
-        state.augustFoundation.baseline.completeAt = BASELINE_VIEWS.every(view => state.augustFoundation.baseline.views[view])
-          ? (state.augustFoundation.baseline.completeAt || new Date().toISOString())
-          : null;
-        save();
-        renderAugustFoundation();
-        toast('July 2026 Baseline status saved');
-        return;
-      }
-      if (event.target.closest('#v39SaveLipids')) {
-        ensureAugustFoundation(state);
-        $$('[data-v39-lipid]').forEach(input => {
-          const [panel, key] = input.dataset.v39Lipid.split('.');
-          state.augustFoundation.cholesterol[panel][key] = input.value;
-        });
-        const lipids = state.augustFoundation.cholesterol;
-        lipids.retestCompleted = $('v39RetestComplete').checked;
-        lipids.valuesRemainElevated = $('v39Elevated').value;
-        lipids.clinicianContacted = $('v39ClinicianContacted').checked;
-        lipids.documentedDecision = $('v39TreatmentDecision').value.trim();
-        if (lipids.valuesRemainElevated === 'Yes' && (!lipids.clinicianContacted || lipids.documentedDecision.length < 8)) {
-          toast('For elevated results, document clinician contact and the shared next action before completing the checkpoint');
-          save();
-          renderAugustFoundation();
-          return;
-        }
-        lipids.decisionCompletedAt = lipids.retestCompleted && lipids.valuesRemainElevated !== 'Review needed' && lipids.documentedDecision.length >= 8
-          ? (lipids.decisionCompletedAt || new Date().toISOString())
-          : null;
-        save();
-        renderAugustFoundation();
-        toast('Lipid results checkpoint saved');
-        return;
-      }
     }, true);
     document.addEventListener('change', event => {
       if (event.target?.id === 'v37CalendarFile' && event.target.files?.[0]) importCalendarFile(event.target.files[0]);
-      if (event.target?.id === 'v39HealthFile' && event.target.files?.[0]) importAppleHealth(event.target.files[0]);
-      if (event.target?.id === 'v39WebRange') renderRadar();
-      if (event.target?.matches?.('[data-v39-day]')) {
-        const day = ensureDay(logDate());
-        const august = ensureAugustDay(day);
-        august[event.target.dataset.v39Day] = event.target.checked;
-        if (event.target.dataset.v39Day === 'ankleRehab' && event.target.checked) august.ankleRecoveryVersion = false;
-        if (event.target.dataset.v39Day === 'ankleRecoveryVersion' && event.target.checked) august.ankleRehab = false;
-        save();
-        renderAugustDaily();
-        renderAugustFoundation();
-        renderRadar();
-      }
       if (event.target?.id === 'v38FastPlanDocumented') {
         state.weeklyMissions.medical.fastingPlanDocumented = event.target.checked;
         if (state.weeklyMissions.current?.status === 'Recommended') state.weeklyMissions.current = null;
@@ -2585,8 +2157,7 @@
       || !!day.nutrition?.creatine
       || (day.nutrition?.protein !== undefined && day.nutrition?.protein !== '')
       || (day.nutrition?.junkCalories !== undefined && day.nutrition?.junkCalories !== '')
-      || Object.values(day.fullChecklist || {}).some(Boolean)
-      || Object.values(day.august || {}).some(value => value === true || value !== '' && value !== false);
+      || Object.values(day.fullChecklist || {}).some(Boolean);
   }
 
   function removeTransientDay(date, wasMeaningful) {
@@ -2667,8 +2238,7 @@
       'Junk-food Calories', 'Creatine', 'No Slither', 'Rehab/Recovery',
       'Restrictions Followed', 'Critical Completed', 'Body Completed', 'Life Completed',
       'Prayer/Reading', 'Outside/Connection', 'What Was Avoided', 'Daily Reflection',
-      'Heart-health Nutrition', 'Whitening', 'Jaw Training', 'Ankle Rehab',
-      'Approved Ankle Recovery Version', 'Symptom Detail', 'Protocol Note', 'Calendar Events'
+      'Symptom Detail', 'Protocol Note', 'Calendar Events'
     ];
     const rows = historyDates().reverse().map(date => {
       const day = getDay(date);
@@ -2683,10 +2253,7 @@
         !!day.actions?.noSlither, !!day.actions?.rehab, !!day.actions?.restrictions,
         !!day.actions?.critical, !!day.actions?.body, !!day.actions?.life,
         !!day.actions?.readingPrayer, !!day.actions?.outsideConnection,
-        day.avoided || '', day.reflectionNote || '',
-        !!day.august?.heartHealthNutrition, !!day.august?.whitening,
-        !!day.august?.jawTraining, !!day.august?.ankleRehab,
-        !!day.august?.ankleRecoveryVersion, day.symptoms?.detail || '',
+        day.avoided || '', day.reflectionNote || '', day.symptoms?.detail || '',
         day.protocolNote || '', calendarEventsFor(date).map(event => event.title || event.summary).join('; ')
       ];
     });

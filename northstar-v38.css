@@ -1,374 +1,69 @@
-/* Project 52 v38 — private command-center refinement */
-:root {
-  --v37-navy: #071521;
-  --v37-navy-2: #0c2233;
-  --v37-gold: #e7bd69;
-  --v37-ice: #dcecf7;
-}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="t d">
+  <title id="t">Project 52 wall rebuild</title>
+  <desc id="d">A fortified stone wall rises course by course beneath rugged mountain ridges, with scaffolding marking the work still ahead.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#050d15"/>
+      <stop offset=".56" stop-color="#102638"/>
+      <stop offset="1" stop-color="#263a43"/>
+    </linearGradient>
+    <linearGradient id="stone" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#536266"/>
+      <stop offset=".5" stop-color="#2c3a3d"/>
+      <stop offset="1" stop-color="#172427"/>
+    </linearGradient>
+    <linearGradient id="newCourse" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#9d793c"/>
+      <stop offset=".52" stop-color="#e7bd69"/>
+      <stop offset="1" stop-color="#80612f"/>
+    </linearGradient>
+    <radialGradient id="workLight" cx=".73" cy=".48" r=".48">
+      <stop stop-color="#e7bd69" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#e7bd69" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="masonry" width="240" height="112" patternUnits="userSpaceOnUse">
+      <rect width="240" height="112" fill="url(#stone)"/>
+      <path d="M0 1h240M0 111h240M2 2v108M120 2v108M238 2v108" fill="none" stroke="#889494" stroke-opacity=".28" stroke-width="3"/>
+      <path d="M7 12h100M130 98h94" fill="none" stroke="#fff" stroke-opacity=".035" stroke-width="7"/>
+    </pattern>
+    <filter id="texture" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="3" seed="52" result="noise"/>
+      <feColorMatrix in="noise" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 .15 0"/>
+    </filter>
+  </defs>
 
-.skipLink {
-  position: fixed;
-  z-index: 20000;
-  top: 10px;
-  left: 10px;
-  padding: 10px 14px;
-  color: #07111d;
-  background: #fff;
-  border-radius: 10px;
-  transform: translateY(-180%);
-  transition: transform .16s ease;
-}
-.skipLink:focus { transform: translateY(0); }
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="#07131d" opacity=".18" filter="url(#texture)"/>
+  <ellipse cx="1160" cy="415" rx="560" ry="440" fill="url(#workLight)"/>
 
-body {
-  background:
-    radial-gradient(circle at 74% -8%, rgba(231, 189, 105, .10), transparent 28rem),
-    linear-gradient(180deg, #06131f, #081a28 52%, #05111b) !important;
-}
-body::before { opacity: .12 !important; }
-body::after { opacity: .16 !important; }
+  <path d="M0 615 205 450l164 122 177-212 220 230 207-266 260 291 180-180 207 172v293H0z" fill="#1b3545" opacity=".72"/>
+  <path d="M0 712 260 520l188 154 252-232 228 208 272-225 400 286v189H0z" fill="#102633" opacity=".88"/>
+  <path d="M0 786 306 675l265 94 328-137 283 116 418-126v278H0z" fill="#07141c"/>
 
-.nav {
-  background: rgba(6, 19, 31, .94) !important;
-  border: 1px solid rgba(231, 189, 105, .20) !important;
-  border-radius: 18px !important;
-  padding: 7px !important;
-}
-.nav::after { display: none !important; }
-.nav button[data-page] {
-  min-height: 48px !important;
-  border-radius: 12px !important;
-  clip-path: none !important;
-  text-transform: none !important;
-  letter-spacing: 0 !important;
-}
-.nav button[data-page]::before,
-.nav button[data-page]::after { display: none !important; }
-.nav button[data-page].active {
-  outline: none !important;
-  color: #07111d !important;
-  background: var(--tab) !important;
-  transform: none !important;
-  box-shadow: 0 9px 22px rgba(var(--tab-rgb), .24) !important;
-}
+  <g opacity=".42" stroke="#b7c1bf" stroke-width="11" stroke-linecap="round">
+    <path d="M948 316v584M1265 286v614M1564 392v508"/>
+    <path d="m901 878 410-568M1219 878l388-476"/>
+    <path d="M901 514h706M901 704h706"/>
+  </g>
+  <g fill="#8c7447">
+    <rect x="880" y="497" width="727" height="24" rx="6"/>
+    <rect x="880" y="687" width="727" height="24" rx="6"/>
+  </g>
 
-.page.active {
-  padding: clamp(9px, 2vw, 16px) !important;
-  border: 1px solid rgba(var(--page-accent-rgb), .30) !important;
-  border-radius: 24px !important;
-  background: rgba(5, 16, 26, .72) !important;
-}
-.page.active::before {
-  border: 0 !important;
-  border-left: 5px solid var(--page-accent) !important;
-  border-radius: 14px !important;
-  clip-path: none !important;
-  font-size: 12px !important;
-  box-shadow: none !important;
-}
-.page.active .sectionHead {
-  border: 0 !important;
-  border-left: 4px solid var(--page-accent) !important;
-  border-radius: 10px !important;
-  background: rgba(var(--page-accent-rgb), .08) !important;
-  box-shadow: none !important;
-}
+  <path d="M710 900V574h132V492h246V410h220V468h292v432z" fill="url(#masonry)" stroke="#aeb8b5" stroke-opacity=".26" stroke-width="4"/>
+  <path d="M710 574h132v-82h246v-82h220v58h292" fill="none" stroke="url(#newCourse)" stroke-width="13" stroke-linejoin="round"/>
 
-.card,
-.goalHero,
-details,
-.notice,
-.metric,
-.mission,
-.tap,
-.rangeField,
-.rewardVaultItem {
-  border-radius: 16px !important;
-  clip-path: none !important;
-}
-.card,
-.goalHero,
-details {
-  background: linear-gradient(145deg, rgba(18, 42, 60, .94), rgba(5, 18, 29, .98) 68%) !important;
-  border: 1px solid rgba(220, 236, 247, .13) !important;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255, 255, 255, .04) !important;
-}
-.card::after,
-.goalHero::after { display: none !important; }
-details { border-left: 3px solid rgba(var(--page-accent-rgb), .48) !important; }
+  <g fill="url(#stone)" stroke="#9aa6a5" stroke-opacity=".28" stroke-width="3">
+    <rect x="1110" y="332" width="116" height="72" rx="4"/>
+    <rect x="1235" y="332" width="116" height="72" rx="4"/>
+    <rect x="1360" y="389" width="116" height="72" rx="4"/>
+    <rect x="1485" y="389" width="105" height="72" rx="4"/>
+  </g>
+  <path d="M1099 407h263" stroke="url(#newCourse)" stroke-width="8" stroke-linecap="round"/>
 
-.action {
-  min-height: 44px;
-  border-radius: 12px !important;
-  clip-path: none !important;
-  text-transform: none !important;
-  letter-spacing: 0 !important;
-  font-size: 12px !important;
-}
-input,
-textarea,
-select {
-  border-radius: 12px !important;
-  min-height: 44px;
-}
-textarea { min-height: 92px; }
-
-#v34DailyCommand,
-#v29MomentumHUD,
-#v29BossPanel,
-#rankMaintenancePanel,
-#rankAccountabilityPanel {
-  display: none !important;
-}
-
-.v37Coach {
-  position: relative;
-  overflow: hidden;
-  margin: 14px 0 18px;
-  border-color: rgba(231, 189, 105, .42) !important;
-  background:
-    radial-gradient(circle at 88% 0, rgba(231, 189, 105, .17), transparent 24rem),
-    linear-gradient(145deg, rgba(17, 46, 68, .98), rgba(5, 18, 29, .99) 70%) !important;
-}
-.v37CoachTop,
-.v37PanelTop {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-.v37CoachTop h2,
-.v37PanelTop h2 { margin: 3px 0 0; }
-.v37CoachQuestion {
-  margin: 14px 0 8px;
-  color: var(--v37-ice);
-  font-weight: 900;
-  font-size: 14px;
-}
-.v37ModeGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-}
-.v37Mode {
-  min-height: 54px;
-  padding: 9px;
-  color: var(--v37-ice);
-  background: rgba(255, 255, 255, .045);
-  border: 1px solid rgba(255, 255, 255, .13);
-  border-radius: 12px;
-  text-align: left;
-}
-.v37Mode[aria-pressed="true"] {
-  color: #07111d;
-  background: var(--v37-gold);
-  border-color: #ffe6a8;
-}
-.v37Mode b,
-.v37Mode small { display: block; }
-.v37Mode small { margin-top: 3px; opacity: .78; }
-
-.v37Capacity {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 9px;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 950;
-  letter-spacing: .07em;
-}
-.v37Capacity.red { color: #ff9393; }
-.v37Capacity.yellow { color: #ffd479; }
-.v37Capacity.green { color: #7be49b; }
-
-.v37MissionGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
-  margin-top: 12px;
-}
-.v37Mission {
-  min-height: 104px;
-  padding: 12px;
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-left: 4px solid var(--mission-color, var(--v37-gold));
-  border-radius: 13px;
-  background: rgba(3, 13, 22, .52);
-}
-.v37Mission b,
-.v37Mission span { display: block; }
-.v37Mission b {
-  margin-bottom: 6px;
-  color: var(--v37-gold);
-  font-size: 10px;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-}
-.v37Mission span { line-height: 1.45; }
-.v37Mission.definition {
-  grid-column: 1 / -1;
-  min-height: auto;
-  --mission-color: #74c4ff;
-}
-
-.v37Agenda {
-  display: grid;
-  gap: 7px;
-  margin-top: 10px;
-}
-.v37AgendaItem {
-  display: grid;
-  grid-template-columns: 84px 1fr;
-  gap: 9px;
-  padding: 9px 10px;
-  border: 1px solid rgba(255, 255, 255, .10);
-  border-radius: 11px;
-  background: rgba(255, 255, 255, .035);
-}
-.v37AgendaItem time { color: #9bd8ff; font-weight: 900; font-size: 11px; }
-.v37AgendaItem b,
-.v37AgendaItem small { display: block; }
-.v37AgendaItem small { margin-top: 2px; color: var(--muted); }
-
-.v37SmartLogGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 260px;
-  gap: 10px;
-}
-.v37SmartPreview {
-  min-height: 118px;
-  padding: 11px;
-  border: 1px dashed rgba(116, 196, 255, .32);
-  border-radius: 12px;
-  background: rgba(4, 14, 24, .55);
-}
-.v37RouteList { display: grid; gap: 6px; margin-top: 8px; }
-.v37Route {
-  padding: 7px 8px;
-  border-radius: 8px;
-  background: rgba(116, 196, 255, .08);
-  font-size: 11px;
-}
-
-.v37EvidenceGrid,
-.v37FinanceGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
-}
-.v37EvidenceItem {
-  padding: 12px;
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: 13px;
-  background: rgba(255, 255, 255, .035);
-}
-.v37EvidenceItem b,
-.v37EvidenceItem small { display: block; }
-.v37EvidenceItem small { margin-top: 4px; color: var(--muted); }
-
-.v37PolicyText {
-  white-space: pre-wrap;
-  line-height: 1.55;
-  color: #e8f1f8;
-}
-.v37StatusLine {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.v37Warning {
-  padding: 10px 12px;
-  border: 1px solid rgba(255, 166, 87, .34);
-  border-radius: 12px;
-  background: rgba(255, 166, 87, .08);
-}
-.v37OriginalCommandHidden { display: none !important; }
-
-.v38WeeklyMission {
-  margin: 14px 0 18px;
-  border-color: rgba(116, 196, 255, .38) !important;
-  background:
-    radial-gradient(circle at 100% 0, rgba(116, 196, 255, .14), transparent 25rem),
-    linear-gradient(145deg, rgba(14, 38, 59, .98), rgba(5, 18, 29, .99) 72%) !important;
-}
-.v38MissionSafety {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin: 14px 0;
-}
-.v38MissionOutput {
-  display: grid;
-  gap: 7px;
-  margin: 12px 0;
-}
-.v38MissionRow {
-  display: grid;
-  grid-template-columns: minmax(170px, .72fr) minmax(0, 1.8fr);
-  gap: 12px;
-  padding: 9px 10px;
-  border: 1px solid rgba(255, 255, 255, .10);
-  border-radius: 11px;
-  background: rgba(255, 255, 255, .035);
-}
-.v38MissionRow b {
-  color: var(--v37-gold);
-  font-size: 10px;
-  letter-spacing: .045em;
-  text-transform: uppercase;
-}
-.v38MissionRow span { line-height: 1.45; }
-.v38MissionProof {
-  display: grid;
-  gap: 7px;
-  padding: 13px;
-  border: 1px solid rgba(82, 212, 126, .38);
-  border-radius: 12px;
-  background: rgba(82, 212, 126, .08);
-}
-.v38MissionProof i { color: #d8ffe3; }
-.v38MissionCompletion {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, .12);
-}
-.v38StakeCard {
-  border-color: rgba(231, 189, 105, .38) !important;
-}
-.v38StakeGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-  margin-bottom: 10px;
-}
-.v38StakeGrid > div {
-  min-height: 92px;
-  padding: 10px;
-  border: 1px solid rgba(255, 255, 255, .10);
-  border-radius: 11px;
-  background: rgba(255, 255, 255, .035);
-}
-.v38StakeGrid .positive { color: #7be49b; }
-.v38StakeGrid .negative { color: #ffb0a8; }
-
-@media (max-width: 760px) {
-  .v37CoachTop,
-  .v37PanelTop { display: grid; }
-  .v37ModeGrid,
-  .v37MissionGrid,
-  .v37EvidenceGrid,
-  .v37FinanceGrid,
-  .v37SmartLogGrid,
-  .v38MissionSafety,
-  .v38StakeGrid { grid-template-columns: 1fr; }
-  .v38MissionRow { grid-template-columns: 1fr; gap: 5px; }
-  .v37Mission.definition { grid-column: auto; }
-  .v37AgendaItem { grid-template-columns: 72px 1fr; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .skipLink { transition: none; }
-}
+  <g opacity=".56">
+    <path d="M880 880h720" stroke="#d2b56e" stroke-width="4"/>
+    <path d="M1005 880 880 784M1320 880l-141-104M1536 880l-129-92" stroke="#d2b56e" stroke-width="3"/>
+  </g>
+  <path d="M530 900c16-105 54-199 116-282 52-70 119-126 201-168-67 63-113 132-137 207-24 76-28 157-12 243z" fill="#d2b56e" opacity=".19"/>
+</svg>
