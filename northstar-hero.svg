@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="t d">
+  <title id="t">Project 52 wall rebuild</title>
+  <desc id="d">A fortified stone wall rises course by course beneath rugged mountain ridges, with scaffolding marking the work still ahead.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#050d15"/>
+      <stop offset=".56" stop-color="#102638"/>
+      <stop offset="1" stop-color="#263a43"/>
+    </linearGradient>
+    <linearGradient id="stone" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#536266"/>
+      <stop offset=".5" stop-color="#2c3a3d"/>
+      <stop offset="1" stop-color="#172427"/>
+    </linearGradient>
+    <linearGradient id="newCourse" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#9d793c"/>
+      <stop offset=".52" stop-color="#e7bd69"/>
+      <stop offset="1" stop-color="#80612f"/>
+    </linearGradient>
+    <radialGradient id="workLight" cx=".73" cy=".48" r=".48">
+      <stop stop-color="#e7bd69" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#e7bd69" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="masonry" width="240" height="112" patternUnits="userSpaceOnUse">
+      <rect width="240" height="112" fill="url(#stone)"/>
+      <path d="M0 1h240M0 111h240M2 2v108M120 2v108M238 2v108" fill="none" stroke="#889494" stroke-opacity=".28" stroke-width="3"/>
+      <path d="M7 12h100M130 98h94" fill="none" stroke="#fff" stroke-opacity=".035" stroke-width="7"/>
+    </pattern>
+    <filter id="texture" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="3" seed="52" result="noise"/>
+      <feColorMatrix in="noise" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 .15 0"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="#07131d" opacity=".18" filter="url(#texture)"/>
+  <ellipse cx="1160" cy="415" rx="560" ry="440" fill="url(#workLight)"/>
+
+  <path d="M0 615 205 450l164 122 177-212 220 230 207-266 260 291 180-180 207 172v293H0z" fill="#1b3545" opacity=".72"/>
+  <path d="M0 712 260 520l188 154 252-232 228 208 272-225 400 286v189H0z" fill="#102633" opacity=".88"/>
+  <path d="M0 786 306 675l265 94 328-137 283 116 418-126v278H0z" fill="#07141c"/>
+
+  <g opacity=".42" stroke="#b7c1bf" stroke-width="11" stroke-linecap="round">
+    <path d="M948 316v584M1265 286v614M1564 392v508"/>
+    <path d="m901 878 410-568M1219 878l388-476"/>
+    <path d="M901 514h706M901 704h706"/>
+  </g>
+  <g fill="#8c7447">
+    <rect x="880" y="497" width="727" height="24" rx="6"/>
+    <rect x="880" y="687" width="727" height="24" rx="6"/>
+  </g>
+
+  <path d="M710 900V574h132V492h246V410h220V468h292v432z" fill="url(#masonry)" stroke="#aeb8b5" stroke-opacity=".26" stroke-width="4"/>
+  <path d="M710 574h132v-82h246v-82h220v58h292" fill="none" stroke="url(#newCourse)" stroke-width="13" stroke-linejoin="round"/>
+
+  <g fill="url(#stone)" stroke="#9aa6a5" stroke-opacity=".28" stroke-width="3">
+    <rect x="1110" y="332" width="116" height="72" rx="4"/>
+    <rect x="1235" y="332" width="116" height="72" rx="4"/>
+    <rect x="1360" y="389" width="116" height="72" rx="4"/>
+    <rect x="1485" y="389" width="105" height="72" rx="4"/>
+  </g>
+  <path d="M1099 407h263" stroke="url(#newCourse)" stroke-width="8" stroke-linecap="round"/>
+
+  <g opacity=".56">
+    <path d="M880 880h720" stroke="#d2b56e" stroke-width="4"/>
+    <path d="M1005 880 880 784M1320 880l-141-104M1536 880l-129-92" stroke="#d2b56e" stroke-width="3"/>
+  </g>
+  <path d="M530 900c16-105 54-199 116-282 52-70 119-126 201-168-67 63-113 132-137 207-24 76-28 157-12 243z" fill="#d2b56e" opacity=".19"/>
+</svg>
